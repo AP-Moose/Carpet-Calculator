@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unit Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #fa6304;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin: 0;
+            padding: 20px;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+        }
+
+        section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        td {
+            padding: 10px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        .toggle {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .toggle label {
+            margin-right: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            body {
+                font-size: 14px;
+            }
+
+            input[type="number"] {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1></h1>
+    <main>
+        <section>
+            <div class="toggle">
+                <label><input type="radio" name="mode" value="fullCarpet" checked onchange="toggleMode()"> Full Carpet</label>
+                <label><input type="radio" name="mode" value="runner" onchange="toggleMode()"> Runner</label>
+            </div>
+            <table>
+                <tr>
+                    <td><label for="feetInput">Feet:</label></td>
+                    <td><input type="number" id="feetInput" placeholder="Enter feet..." oninput="updateOutput()"></td>
+                </tr>
+                <tr>
+                    <td><label for="inchesInput">Inches:</label></td>
+                    <td><input type="number" id="inchesInput" placeholder="Enter inches..." oninput="updateOutput()"></td>
+                </tr>
+                <tr class="fullCarpet">
+                    <td><label for="costSqYdInput">Cost per Square Yard:</label></td>
+                    <td><input type="number" id="costSqYdInput" placeholder="Enter cost..." oninput="updateOutput()"></td>
+                </tr>
+                <tr class="runner hidden">
+                    <td><label for="costLinearFootInput">Cost per Linear Foot:</label></td>
+                    <td><input type="number" id="costLinearFootInput" placeholder="Enter cost..." oninput="updateOutput()"></td>
+                </tr>
+                <tr>
+                    <td>Total Length:</td>
+                    <td><span id="output"></span></td>
+                </tr>
+                <tr class="fullCarpet">
+                    <td>Square Feet:</td>
+                    <td><span id="squareOutput"></span></td>
+                </tr>
+                <tr class="fullCarpet">
+                    <td><strong>Square Yards:</strong></td>
+                    <td><span id="squareYardOutput"></span></td>
+                </tr>
+                <tr class="fullCarpet">
+                    <td><strong>Total Cost (sq yd):</strong></td>
+                    <td><span id="totalCostSqYdOutput"></span></td>
+                </tr>
+                <tr class="runner hidden">
+                    <td><strong>Total Cost (LF):</strong></td>
+                    <td><span id="totalCostLFOutput"></span></td>
+                </tr>
+            </table>
+        </section>
+    </main>
+    <script>
+        function updateOutput() {
+            const feetInput = parseFloat(document.getElementById("feetInput").value) || 0;
+            const inchesInput = parseFloat(document.getElementById("inchesInput").value) || 0;
+            const costSqYdInput = parseFloat(document.getElementById("costSqYdInput").value) || 0;
+            const costLinearFootInput = parseFloat(document.getElementById("costLinearFootInput").value) || 0;
+
+            const totalFeet = feetInput + (inchesInput / 12);
+            const totalLength = totalFeet.toFixed(2) + " feet";
+
+            const squareFeet = (totalFeet * 12).toFixed(2);
+            const squareOutput = squareFeet + " square feet";
+
+            const squareYards = (squareFeet / 9).toFixed(2);
+            const squareYardOutput = squareYards + " square yards";
+
+            const totalCostSqYd = (squareYards * costSqYdInput).toFixed(2);
+            const totalCostSqYdOutput = "Total Cost (sq yd): $" + totalCostSqYd;
+            
+            const totalCostLF = (totalFeet * costLinearFootInput).toFixed(2);
+            const totalCostLFOutput = "Total Cost (LF): $" + totalCostLF;
+
+            document.getElementById("output").textContent = totalLength;
+            document.getElementById("squareOutput").textContent = squareOutput;
+            document.getElementById("squareYardOutput").textContent = squareYardOutput;
+            document.getElementById("totalCostSqYdOutput").textContent = totalCostSqYdOutput;
+            document.getElementById("totalCostLFOutput").textContent = totalCostLFOutput;
+        }
+        
+        function toggleMode() {
+            const fullCarpetElements = document.querySelectorAll(".fullCarpet");
+            const runnerElements = document.querySelectorAll(".runner");
+            const selectedMode = document.querySelector('input[name="mode"]:checked').value;
+            
+            if (selectedMode === "fullCarpet") {
+                fullCarpetElements.forEach(element => element.classList.remove("hidden"));
+                runnerElements.forEach(element => element.classList.add("hidden"));
+            } else if (selectedMode === "runner") {
+                fullCarpetElements.forEach(element => element.classList.add("hidden"));
+                runnerElements.forEach(element => element.classList.remove("hidden"));
+            }
+        }
+    </script>
+</body>
+</html>
